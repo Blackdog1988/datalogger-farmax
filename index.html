@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de Dataloggers — Controle de bateria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topo">
+  <div class="faixa">
+    <p class="eyebrow">Mapeamento térmico &middot; Armazém</p>
+    <h1>Mapa de dataloggers</h1>
+    <p class="chamada">
+      Cada bateria vale <strong>24 meses</strong> a partir da troca. Esta página conta o tempo por você
+      e avisa quem já passou do prazo.
+    </p>
+    <p class="hoje">Data de referência: <span id="dataHoje" class="mono"></span></p>
+  </div>
+</header>
+
+<main>
+
+  <!-- Alerta principal -->
+  <section class="secao" aria-labelledby="tit-alerta">
+    <h2 id="tit-alerta" class="sr-only">Alertas de vencimento</h2>
+    <div id="alertaGlobal" class="alerta" role="status" aria-live="polite"></div>
+  </section>
+
+  <!-- Resumo -->
+  <section class="secao" aria-labelledby="tit-resumo">
+    <h2 id="tit-resumo" class="titulo-secao">Situação da frota</h2>
+    <div id="resumo" class="resumo"></div>
+  </section>
+
+  <!-- Assinatura visual: régua de 24 meses -->
+  <section class="secao" aria-labelledby="tit-regua">
+    <h2 id="tit-regua" class="titulo-secao">Régua de vida útil</h2>
+    <p class="apoio">Posição de cada equipamento dentro dos 24 meses de bateria. Passe o cursor para identificar.</p>
+
+    <div class="regua-caixa">
+      <div class="regua" id="regua" role="img" aria-label="Distribuição dos dataloggers ao longo dos 24 meses de vida útil da bateria">
+        <div class="regua-trilho">
+          <span class="zona zona-ok"></span>
+          <span class="zona zona-atencao"></span>
+          <span class="zona zona-critico"></span>
+        </div>
+        <div class="regua-marcadores" id="reguaMarcadores"></div>
+      </div>
+      <div class="regua-eixo">
+        <span>0</span><span>6</span><span>12</span><span>18</span><span>24 meses</span>
+      </div>
+      <div class="bandeja" id="bandeja"></div>
+    </div>
+  </section>
+
+  <!-- Tabela -->
+  <section class="secao" aria-labelledby="tit-tabela">
+    <div class="cabeca-tabela">
+      <h2 id="tit-tabela" class="titulo-secao">Equipamentos</h2>
+      <div class="ferramentas">
+        <label class="campo">
+          <span class="sr-only">Buscar por número, endereço ou série</span>
+          <input type="search" id="busca" placeholder="Buscar nº, endereço ou série" autocomplete="off">
+        </label>
+        <label class="campo">
+          <span class="sr-only">Filtrar por situação</span>
+          <select id="filtroStatus">
+            <option value="todos">Todas as situações</option>
+            <option value="vencido">Vencidas</option>
+            <option value="critico">Vencem em até 30 dias</option>
+            <option value="atencao">Vencem em até 90 dias</option>
+            <option value="ok">Dentro do prazo</option>
+            <option value="sem-registro">Sem data registrada</option>
+          </select>
+        </label>
+        <label class="campo">
+          <span class="sr-only">Filtrar por modelo</span>
+          <select id="filtroModelo"><option value="todos">Todos os modelos</option></select>
+        </label>
+      </div>
+    </div>
+
+    <div class="tabela-rolagem">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th scope="col">Datalogger</th>
+            <th scope="col">Endereço</th>
+            <th scope="col">Nº de série</th>
+            <th scope="col">Modelo</th>
+            <th scope="col">Última troca</th>
+            <th scope="col">Vence em</th>
+            <th scope="col">Situação</th>
+            <th scope="col"><span class="sr-only">Ação</span></th>
+          </tr>
+        </thead>
+        <tbody id="corpoTabela"></tbody>
+      </table>
+    </div>
+
+    <p id="vazio" class="vazio" hidden>Nenhum equipamento com esse filtro. Limpe a busca para ver a lista completa.</p>
+
+    <div class="rodape-tabela">
+      <p class="apoio" id="contagem"></p>
+      <div class="acoes-arquivo">
+        <button type="button" class="btn" id="exportarCsv">Baixar CSV</button>
+        <button type="button" class="btn" id="exportarJson">Salvar registro</button>
+        <label class="btn btn-arquivo">
+          Carregar registro
+          <input type="file" id="importarJson" accept="application/json" hidden>
+        </label>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="rodape">
+  <p>Dados do mapeamento de dataloggers · vida útil de bateria de 24 meses</p>
+  <p class="marca">CodeDog</p>
+</footer>
+
+<div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>
