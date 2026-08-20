@@ -129,65 +129,36 @@ main {
 /* ---------- Alerta principal ---------- */
 
 .alerta {
-  display: block;
-  padding: 20px 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
   border-radius: var(--raio);
   border-left: 5px solid var(--frio);
   background: var(--papel-alto);
   box-shadow: var(--sombra);
 }
 
-.alerta.tem-vencido  { border-left-color: var(--vencido); }
-.alerta.tem-proximo  { border-left-color: var(--atencao); }
-.alerta.tem-pendente { border-left-color: var(--neutro); }
+.alerta.tem-vencido { border-left-color: var(--vencido); }
+.alerta.tem-proximo { border-left-color: var(--atencao); }
 
 .alerta-texto {
   margin: 0;
   font-family: var(--display);
-  font-size: 1.35rem;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -.02em;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  flex: 1 1 320px;
 }
-
-.alerta-etiqueta {
-  display: inline-block;
-  font-family: var(--dado);
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--frio);
-  vertical-align: middle;
-  margin-right: 10px;
-  padding: 3px 8px;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-}
-
-.alerta.tem-vencido .alerta-texto .alerta-etiqueta { color: var(--vencido); }
-.alerta.tem-proximo .alerta-texto .alerta-etiqueta { color: var(--atencao); }
-.alerta.tem-pendente .alerta-texto .alerta-etiqueta { color: var(--neutro); }
 
 .alerta-detalhe {
-  display: block;
-  margin: 8px 0 0;
+  margin: 4px 0 0;
   font-size: 13.5px;
   font-weight: 400;
   font-family: var(--texto);
-  letter-spacing: 0;
   color: var(--tinta-fraca);
 }
-
-.alerta-secundario {
-  margin: 16px 0 0;
-  padding-top: 14px;
-  border-top: 1px dashed var(--grade);
-  font-size: 13px;
-  color: var(--tinta-fraca);
-}
-
-.alerta-secundario .alerta-etiqueta { color: var(--neutro); }
 
 /* ---------- Resumo ---------- */
 
@@ -206,22 +177,10 @@ main {
   padding: 16px 16px 14px;
 }
 
-.cartao[data-tom="vencido"]    { border-top-color: var(--vencido); }
-.cartao[data-tom="critico"]    { border-top-color: var(--vencido); }
-.cartao[data-tom="atencao"]    { border-top-color: var(--atencao); }
-.cartao[data-tom="ok"]         { border-top-color: var(--frio); }
-.cartao[data-tom="pendente"]   { border-top-color: var(--neutro); }
-
-/* Baterias: mesmo cartão, peso visual menor */
-.cartao[data-tom="secundario"] {
-  border-top-color: var(--grade);
-  background: transparent;
-}
-
-.cartao[data-tom="secundario"] .cartao-numero {
-  font-size: 1.5rem;
-  color: var(--tinta-fraca);
-}
+.cartao[data-tom="vencido"] { border-top-color: var(--vencido); }
+.cartao[data-tom="critico"] { border-top-color: var(--vencido); }
+.cartao[data-tom="atencao"] { border-top-color: var(--atencao); }
+.cartao[data-tom="ok"]      { border-top-color: var(--frio); }
 
 .cartao-numero {
   font-family: var(--display);
@@ -450,6 +409,13 @@ main {
 .cert-numero::placeholder { color: var(--neutro); font-style: italic; }
 .cert-numero:hover { border-color: var(--frio); }
 
+.selo-cert {
+  display: inline-flex;
+  margin-left: 8px;
+  font-size: 10px;
+  padding: 2px 7px;
+}
+
 /* ---------- Selos de situação ---------- */
 
 .selo {
@@ -479,18 +445,7 @@ main {
 .selo[data-status="vencido"]     { color: var(--vencido); }
 .selo[data-status="sem-registro"]{ color: var(--neutro); }
 
-.selo-cert {
-  display: inline-flex;
-  margin-left: 8px;
-  font-size: 10px;
-  padding: 2px 7px;
-}
-
-tr[data-cert="vencido"] { background: rgba(165, 47, 38, .06); }
-tr[data-cert="critico"] { background: rgba(179, 114, 12, .05); }
-
-
-.cert-numero:placeholder-shown { border-style: dashed; border-color: var(--neutro); }
+tr[data-status="vencido"] { background: rgba(165, 47, 38, .05); }
 
 /* ---------- Botões ---------- */
 
