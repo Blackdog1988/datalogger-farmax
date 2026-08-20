@@ -14,33 +14,34 @@ const PRAZO_ATENCAO   = 90;   // dias para o aviso amarelo
 const PRAZO_CRITICO   = 30;   // dias para o aviso vermelho
 
 /* ---------- 2. Dados da planilha ---------- */
-/* ultimaTroca: data no formato "AAAA-MM-DD" ou null quando não registrada */
+/* ultimaTroca / validadeCert: data "AAAA-MM-DD" ou null quando não registrada
+   certificado: número do certificado, string vazia enquanto não preenchido    */
 
 const DATALOGGERS = [
-  { id: 'DATA 001', endereco: 'R2-02-N5',   serie: 'CM7251100015', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 002', endereco: 'R2-30-05',   serie: 'CM7251100006', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 003', endereco: 'R4-20-N5',   serie: 'CM7251100012', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 004', endereco: 'R6-30-N5',   serie: 'CM7259100126', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 005', endereco: 'R8-20-N5',   serie: 'CM7259100140', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 006', endereco: 'R10-01-N5',  serie: 'CM7251100014', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 007', endereco: 'R16-01-N5',  serie: 'CM7259100139', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 008', endereco: 'R16-30-N5',  serie: 'CM7251100049', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 009', endereco: 'R18-20-N5',  serie: 'CM7251100013', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 010', endereco: 'R22-01-N5',  serie: 'CM7259100123', modelo: 'RC-4HC',     ultimaTroca: null },
-  { id: 'DATA 011', endereco: 'R22-30-N5',  serie: 'CM7251100011', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 012', endereco: 'R24-20-N5',  serie: 'CM7259100141', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 013', endereco: 'R28-01-N5',  serie: 'CM723B100003', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 014', endereco: 'R28-30-N5',  serie: 'EF7223100213', modelo: 'RC-4HC',     ultimaTroca: null },
-  { id: 'DATA 015', endereco: 'R30-20-N5',  serie: 'CM7251100010', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 016', endereco: 'R32-01-N5',  serie: 'EF7226107849', modelo: 'RC-4HC',     ultimaTroca: null },
-  { id: 'DATA 017', endereco: 'R32-30-N5',  serie: 'EF7225101125', modelo: 'RC-4HC',     ultimaTroca: null },
-  { id: 'DATA 018', endereco: 'R14-20-N3',  serie: 'CM7259100127', modelo: 'RC-4HC',     ultimaTroca: null },
-  { id: 'DATA 019', endereco: 'R20-01-N3',  serie: 'CM7259100138', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 020', endereco: 'R20-30-N3',  serie: 'CM723B100002', modelo: 'RC-4HC',     ultimaTroca: null },
-  { id: 'DATA 021', endereco: 'R26-20-N3',  serie: 'EF7223100247', modelo: 'RC-4HC',     ultimaTroca: '2026-04-17' },
-  { id: 'DATA 022', endereco: 'R6-01-N1',   serie: 'CM7251100009', modelo: 'Tlog B100H', ultimaTroca: null },
-  { id: 'DATA 023', endereco: 'R10-30-N1',  serie: 'EF7225101104', modelo: 'RC-4HC',     ultimaTroca: null },
-  { id: 'DATA 024', endereco: 'R-12-20-N1', serie: 'CM7259100124', modelo: 'Tlog B100H', ultimaTroca: null }
+  { id: 'DATA 001', endereco: 'R2-02-N5',   serie: 'CM7251100015', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 002', endereco: 'R2-30-05',   serie: 'CM7251100006', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 003', endereco: 'R4-20-N5',   serie: 'CM7251100012', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 004', endereco: 'R6-30-N5',   serie: 'CM7259100126', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 005', endereco: 'R8-20-N5',   serie: 'CM7259100140', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 006', endereco: 'R10-01-N5',  serie: 'CM7251100014', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 007', endereco: 'R16-01-N5',  serie: 'CM7259100139', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 008', endereco: 'R16-30-N5',  serie: 'CM7251100049', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 009', endereco: 'R18-20-N5',  serie: 'CM7251100013', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 010', endereco: 'R22-01-N5',  serie: 'CM7259100123', modelo: 'RC-4HC',     ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 011', endereco: 'R22-30-N5',  serie: 'CM7251100011', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 012', endereco: 'R24-20-N5',  serie: 'CM7259100141', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 013', endereco: 'R28-01-N5',  serie: 'CM723B100003', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 014', endereco: 'R28-30-N5',  serie: 'EF7223100213', modelo: 'RC-4HC',     ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 015', endereco: 'R30-20-N5',  serie: 'CM7251100010', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 016', endereco: 'R32-01-N5',  serie: 'EF7226107849', modelo: 'RC-4HC',     ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 017', endereco: 'R32-30-N5',  serie: 'EF7225101125', modelo: 'RC-4HC',     ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 018', endereco: 'R14-20-N3',  serie: 'CM7259100127', modelo: 'RC-4HC',     ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 019', endereco: 'R20-01-N3',  serie: 'CM7259100138', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 020', endereco: 'R20-30-N3',  serie: 'CM723B100002', modelo: 'RC-4HC',     ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 021', endereco: 'R26-20-N3',  serie: 'EF7223100247', modelo: 'RC-4HC',     ultimaTroca: '2026-04-17', certificado: '', validadeCert: null },
+  { id: 'DATA 022', endereco: 'R6-01-N1',   serie: 'CM7251100009', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 023', endereco: 'R10-30-N1',  serie: 'EF7225101104', modelo: 'RC-4HC',     ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 024', endereco: 'R-12-20-N1', serie: 'CM7259100124', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null }
 ];
 
 /* ---------- 3. Funções de data ---------- */
@@ -85,25 +86,41 @@ function paraTextoISO(data) {
 
 /**
  * Devolve o item com vencimento, dias restantes e situação.
- * situação: sem-registro | vencido | critico | atencao | ok
+ * status (bateria) e statusCert (certificado):
+ * sem-registro | vencido | critico | atencao | ok
  */
 function avaliar(item) {
   const troca = paraData(item.ultimaTroca);
+  const base = {
+    ...item,
+    troca: null, vencimento: null, diasRestantes: null, status: 'sem-registro',
+    ...avaliarCertificado(item)
+  };
 
-  if (!troca) {
-    return { ...item, troca: null, vencimento: null, diasRestantes: null, status: 'sem-registro' };
-  }
+  if (!troca) return base;
 
   const vencimento = somarMeses(troca, VIDA_UTIL_MESES);
   const diasRestantes = diasEntre(HOJE, vencimento);
 
-  let status;
-  if (diasRestantes < 0)                  status = 'vencido';
-  else if (diasRestantes <= PRAZO_CRITICO) status = 'critico';
-  else if (diasRestantes <= PRAZO_ATENCAO) status = 'atencao';
-  else                                     status = 'ok';
+  return { ...base, troca, vencimento, diasRestantes, status: faixa(diasRestantes) };
+}
 
-  return { ...item, troca, vencimento, diasRestantes, status };
+/** Situação do certificado: usa a validade informada, sem cálculo de prazo. */
+function avaliarCertificado(item) {
+  const validade = paraData(item.validadeCert);
+  if (!validade) {
+    return { validade: null, diasCert: null, statusCert: 'sem-registro' };
+  }
+  const diasCert = diasEntre(HOJE, validade);
+  return { validade, diasCert, statusCert: faixa(diasCert) };
+}
+
+/** Traduz dias restantes em faixa de alerta. */
+function faixa(dias) {
+  if (dias < 0)                return 'vencido';
+  if (dias <= PRAZO_CRITICO)   return 'critico';
+  if (dias <= PRAZO_ATENCAO)   return 'atencao';
+  return 'ok';
 }
 
 const ROTULO_STATUS = {
@@ -114,13 +131,20 @@ const ROTULO_STATUS = {
   'sem-registro': 'Sem data'
 };
 
-function textoRestante(av) {
-  if (av.status === 'sem-registro') return 'registre a troca';
-  const d = av.diasRestantes;
-  if (d < 0)  return `vencida há ${Math.abs(d)} dia${Math.abs(d) === 1 ? '' : 's'}`;
-  if (d === 0) return 'vence hoje';
-  if (d < 60) return `faltam ${d} dia${d === 1 ? '' : 's'}`;
-  return `faltam ${Math.floor(d / 30)} meses`;
+const ROTULO_CERT = {
+  'vencido':      'Vencido',
+  'critico':      'Vence em breve',
+  'atencao':      'Atenção',
+  'ok':           'No prazo',
+  'sem-registro': 'Sem registro'
+};
+
+function textoRestante(dias, semRegistro) {
+  if (dias === null || dias === undefined) return semRegistro;
+  if (dias < 0)   return `vencido há ${Math.abs(dias)} dia${Math.abs(dias) === 1 ? '' : 's'}`;
+  if (dias === 0) return 'vence hoje';
+  if (dias < 60)  return `faltam ${dias} dia${dias === 1 ? '' : 's'}`;
+  return `faltam ${Math.floor(dias / 30)} meses`;
 }
 
 /* ---------- 5. Estado da tela ---------- */
@@ -148,11 +172,14 @@ function avaliados() {
 
 function filtrados(lista) {
   const busca = filtros.busca.trim().toLowerCase();
+  const [campo, valor] = filtros.status.includes(':') ? filtros.status.split(':') : [null, null];
+
   return lista.filter(av => {
-    if (filtros.status !== 'todos' && av.status !== filtros.status) return false;
+    if (campo === 'bat'  && av.status     !== valor) return false;
+    if (campo === 'cert' && av.statusCert !== valor) return false;
     if (filtros.modelo !== 'todos' && av.modelo !== filtros.modelo) return false;
     if (!busca) return true;
-    return [av.id, av.endereco, av.serie, av.modelo]
+    return [av.id, av.endereco, av.serie, av.modelo, av.certificado]
       .join(' ').toLowerCase().includes(busca);
   });
 }
@@ -191,18 +218,36 @@ function renderAlerta(lista) {
   el.alerta.innerHTML = `
     <p class="alerta-texto">${titulo}
       <span class="alerta-detalhe">${detalhe}</span>
+      <span class="alerta-detalhe">${textoCertificados(lista)}</span>
     </p>`;
+}
+
+/** Frase de situação dos certificados, exibida junto ao alerta da bateria. */
+function textoCertificados(lista) {
+  const vencidos = lista.filter(a => a.statusCert === 'vencido');
+  const proximos = lista.filter(a => a.statusCert === 'critico' || a.statusCert === 'atencao');
+  const sem      = lista.filter(a => a.statusCert === 'sem-registro');
+
+  const partes = [];
+  if (vencidos.length) partes.push(`Certificados vencidos: ${vencidos.map(a => a.id).join(', ')}.`);
+  if (proximos.length) partes.push(`${proximos.length} certificado${proximos.length > 1 ? 's vencem' : ' vence'} nos próximos 90 dias: ${proximos.map(a => `${a.id} — ${formatarData(a.validade)}`).join(' · ')}.`);
+  if (sem.length)      partes.push(`${sem.length} de ${lista.length} equipamentos ainda sem número e validade de certificado.`);
+  if (!partes.length)  partes.push('Todos os certificados estão registrados e dentro da validade.');
+
+  return partes.join(' ');
 }
 
 function renderResumo(lista) {
   const cont = t => lista.filter(a => a.status === t).length;
+  const contCert = t => lista.filter(a => a.statusCert === t).length;
   const cartoes = [
     { rotulo: 'Equipamentos no mapa',   valor: lista.length,             tom: 'neutro'  },
     { rotulo: 'Baterias vencidas',      valor: cont('vencido'),          tom: 'vencido' },
-    { rotulo: 'Vencem em até 30 dias',  valor: cont('critico'),          tom: 'critico' },
-    { rotulo: 'Vencem em até 90 dias',  valor: cont('atencao'),          tom: 'atencao' },
-    { rotulo: 'Dentro do prazo',        valor: cont('ok'),               tom: 'ok'      },
-    { rotulo: 'Sem data registrada',    valor: cont('sem-registro'),     tom: 'neutro'  }
+    { rotulo: 'Baterias vencem em 30 dias', valor: cont('critico'),      tom: 'critico' },
+    { rotulo: 'Baterias vencem em 90 dias', valor: cont('atencao'),      tom: 'atencao' },
+    { rotulo: 'Baterias sem data',      valor: cont('sem-registro'),     tom: 'neutro'  },
+    { rotulo: 'Certificados vencidos',  valor: contCert('vencido'),      tom: 'vencido' },
+    { rotulo: 'Certificados registrados', valor: lista.length - contCert('sem-registro'), tom: 'ok' }
   ];
 
   el.resumo.innerHTML = cartoes.map(c => `
@@ -243,13 +288,23 @@ function renderTabela(lista) {
       <td class="cel-end"   data-rotulo="Endereço">${av.endereco}</td>
       <td class="cel-serie" data-rotulo="Nº de série">${av.serie}</td>
       <td data-rotulo="Modelo">${av.modelo}</td>
+      <td data-rotulo="Nº do certificado">
+        <input type="text" class="cert-numero" value="${escapar(av.certificado)}"
+               placeholder="a preencher" data-id="${av.id}"
+               aria-label="Número do certificado do ${av.id}">
+      </td>
+      <td data-rotulo="Validade do certificado">
+        <input type="date" class="data-troca cert-validade" value="${av.validadeCert || ''}"
+               data-id="${av.id}" aria-label="Validade do certificado do ${av.id}">
+        <span class="selo selo-cert" data-status="${av.statusCert}">${ROTULO_CERT[av.statusCert]}</span>
+      </td>
       <td data-rotulo="Última troca">
         <input type="date" class="data-troca" value="${av.ultimaTroca || ''}"
                data-id="${av.id}" aria-label="Última troca de bateria do ${av.id}">
       </td>
       <td class="cel-venc" data-rotulo="Vence em">
         ${formatarData(av.vencimento)}
-        <span class="restante">${textoRestante(av)}</span>
+        <span class="restante">${textoRestante(av.diasRestantes, 'registre a troca')}</span>
       </td>
       <td data-rotulo="Situação">
         <span class="selo" data-status="${av.status}">${ROTULO_STATUS[av.status]}</span>
@@ -293,8 +348,32 @@ function definirTroca(id, valorISO) {
   }
 }
 
+function definirCertificado(id, numero) {
+  const item = DATALOGGERS.find(d => d.id === id);
+  if (!item) return;
+  item.certificado = numero.trim();
+  renderTudo();
+  avisar(item.certificado
+    ? `${id}: certificado ${item.certificado} registrado.`
+    : `${id}: número do certificado removido.`);
+}
+
+function definirValidadeCert(id, valorISO) {
+  const item = DATALOGGERS.find(d => d.id === id);
+  if (!item) return;
+  item.validadeCert = valorISO || null;
+  renderTudo();
+  avisar(valorISO
+    ? `${id}: certificado válido até ${formatarData(paraData(valorISO))}.`
+    : `${id}: validade do certificado removida.`);
+}
+
 el.corpo.addEventListener('change', e => {
-  if (e.target.matches('.data-troca')) definirTroca(e.target.dataset.id, e.target.value);
+  const alvo = e.target;
+  const id = alvo.dataset.id;
+  if (alvo.matches('.cert-validade'))     definirValidadeCert(id, alvo.value);
+  else if (alvo.matches('.cert-numero'))  definirCertificado(id, alvo.value);
+  else if (alvo.matches('.data-troca'))   definirTroca(id, alvo.value);
 });
 
 el.corpo.addEventListener('click', e => {
@@ -328,10 +407,21 @@ function baixar(nome, conteudo, tipo) {
   URL.revokeObjectURL(url);
 }
 
+/** Protege o valor digitado antes de devolvê-lo ao HTML. */
+function escapar(texto) {
+  return String(texto || '').replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 document.getElementById('exportarCsv').addEventListener('click', () => {
-  const cab = ['Numero datalogger', 'Endereco', 'No serie', 'Modelo', 'Ultima troca', 'Vencimento', 'Situacao'];
+  const cab = ['Numero datalogger', 'Endereco', 'No serie', 'Modelo',
+               'No certificado', 'Validade do certificado', 'Situacao do certificado',
+               'Ultima troca', 'Vencimento da bateria', 'Situacao da bateria'];
   const linhas = avaliados().map(av => [
     av.id, av.endereco, av.serie, av.modelo,
+    av.certificado,
+    av.validade ? formatarData(av.validade) : '',
+    ROTULO_CERT[av.statusCert],
     av.troca ? formatarData(av.troca) : '',
     av.vencimento ? formatarData(av.vencimento) : '',
     ROTULO_STATUS[av.status]
@@ -344,8 +434,8 @@ document.getElementById('exportarCsv').addEventListener('click', () => {
 });
 
 document.getElementById('exportarJson').addEventListener('click', () => {
-  const dados = DATALOGGERS.map(({ id, endereco, serie, modelo, ultimaTroca }) =>
-    ({ id, endereco, serie, modelo, ultimaTroca }));
+  const dados = DATALOGGERS.map(({ id, endereco, serie, modelo, ultimaTroca, certificado, validadeCert }) =>
+    ({ id, endereco, serie, modelo, ultimaTroca, certificado, validadeCert }));
   baixar(`dataloggers-${paraTextoISO(HOJE)}.json`, JSON.stringify(dados, null, 2), 'application/json');
   avisar('Registro salvo. Guarde o arquivo para carregar depois.');
 });
@@ -363,7 +453,12 @@ document.getElementById('importarJson').addEventListener('change', e => {
       let aplicados = 0;
       dados.forEach(reg => {
         const item = DATALOGGERS.find(d => d.id === reg.id);
-        if (item) { item.ultimaTroca = reg.ultimaTroca || null; aplicados++; }
+        if (item) {
+          item.ultimaTroca  = reg.ultimaTroca  || null;
+          item.certificado  = reg.certificado  || '';
+          item.validadeCert = reg.validadeCert || null;
+          aplicados++;
+        }
       });
 
       renderTudo();
