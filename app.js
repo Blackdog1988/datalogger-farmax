@@ -187,52 +187,65 @@ function filtrados(lista) {
 /* ---------- 6. Renderização ---------- */
 
 function renderAlerta(lista) {
-  const vencidos = lista.filter(a => a.status === 'vencido');
-  const criticos = lista.filter(a => a.status === 'critico');
-  const atencao  = lista.filter(a => a.status === 'atencao');
-  const sem      = lista.filter(a => a.status === 'sem-registro');
+  const cert = { titulo: '', detalhe: '', tom: 'ok' };
 
-  el.alerta.classList.toggle('tem-vencido', vencidos.length > 0);
-  el.alerta.classList.toggle('tem-proximo', vencidos.length === 0 && (criticos.length > 0 || atencao.length > 0));
+  const cVencidos = lista.filter(a => a.statusCert === 'vencido');
+  const cCriticos = lista.filter(a => a.statusCert === 'critico');
+  const cAtencao  = lista.filter(a => a.statusCert === 'atencao');
+  const cSem      = lista.filter(a => a.statusCert === 'sem-registro');
 
-  let titulo, detalhe;
-
-  if (vencidos.length) {
-    titulo = `${vencidos.length} bateria${vencidos.length > 1 ? 's' : ''} fora do prazo de 24 meses`;
-    detalhe = `Trocar: ${vencidos.map(a => `${a.id} (${a.endereco})`).join(' · ')}`;
-  } else if (criticos.length) {
-    titulo = `${criticos.length} bateria${criticos.length > 1 ? 's vencem' : ' vence'} nos próximos 30 dias`;
-    detalhe = criticos.map(a => `${a.id} — ${formatarData(a.vencimento)}`).join(' · ');
-  } else if (atencao.length) {
-    titulo = `${atencao.length} bateria${atencao.length > 1 ? 's vencem' : ' vence'} nos próximos 90 dias`;
-    detalhe = atencao.map(a => `${a.id} — ${formatarData(a.vencimento)}`).join(' · ');
+  if (cVencidos.length) {
+    cert.tom = 'vencido';
+    cert.titulo = `${cVencidos.length} certificado${cVencidos.length > 1 ? 's vencidos' : ' vencido'}`;
+    cert.detalhe = `Recalibrar: ${cVencidos.map(a => `${a.id} (${a.endereco}) — venceu ${formatarData(a.validade)}`).join(' · ')}`;
+  } else if (cCriticos.length) {
+    cert.tom = 'proximo';
+    cert.titulo = `${cCriticos.length} certificado${cCriticos.length > 1 ? 's vencem' : ' vence'} nos próximos 30 dias`;
+    cert.detalhe = cCriticos.map(a => `${a.id} — ${formatarData(a.validade)}`).join(' · ');
+  } else if (cAtencao.length) {
+    cert.tom = 'proximo';
+    cert.titulo = `${cAtencao.length} certificado${cAtencao.length > 1 ? 's vencem' : ' vence'} nos próximos 90 dias`;
+    cert.detalhe = cAtencao.map(a => `${a.id} — ${formatarData(a.validade)}`).join(' · ');
+  } else if (cSem.length === lista.length) {
+    cert.tom = 'pendente';
+    cert.titulo = 'Nenhum certificado registrado';
+    cert.detalhe = `Preencha número e validade dos ${lista.length} equipamentos para o controle começar a avisar.`;
   } else {
-    titulo = 'Nenhuma bateria vencida ou próxima do vencimento';
-    detalhe = 'Todas as datas registradas estão dentro dos 24 meses.';
+    cert.titulo = 'Certificados dentro da validade';
+    cert.detalhe = 'Nenhum vencimento de certificado nos próximos 90 dias.';
   }
 
-  if (sem.length) {
-    detalhe += `${detalhe ? ' — ' : ''}${sem.length} equipamento${sem.length > 1 ? 's' : ''} ainda sem data de troca registrada.`;
+  if (cSem.length && cSem.length < lista.length) {
+    cert.detalhe += `${cert.detalhe ? ' — ' : ''}${cSem.length} equipamento${cSem.length > 1 ? 's' : ''} ainda sem certificado registrado.`;
   }
+
+  el.alerta.classList.toggle('tem-vencido', cert.tom === 'vencido');
+  el.alerta.classList.toggle('tem-proximo', cert.tom === 'proximo');
+  el.alerta.classList.toggle('tem-pendente', cert.tom === 'pendente');
 
   el.alerta.innerHTML = `
-    <p class="alerta-texto">${titulo}
-      <span class="alerta-detalhe">${detalhe}</span>
-      <span class="alerta-detalhe">${textoCertificados(lista)}</span>
+    <p class="alerta-texto">
+      <span class="alerta-etiqueta">Certificado</span>
+      ${cert.titulo}
+      <span class="alerta-detalhe">${cert.detalhe}</span>
+    </p>
+    <p class="alerta-secundario">
+      <span class="alerta-etiqueta">Bateria</span>
+      ${textoBaterias(lista)}
     </p>`;
 }
 
-/** Frase de situação dos certificados, exibida junto ao alerta da bateria. */
-function textoCertificados(lista) {
-  const vencidos = lista.filter(a => a.statusCert === 'vencido');
-  const proximos = lista.filter(a => a.statusCert === 'critico' || a.statusCert === 'atencao');
-  const sem      = lista.filter(a => a.statusCert === 'sem-registro');
+/** Frase de situação das baterias, exibida abaixo do alerta do certificado. */
+function textoBaterias(lista) {
+  const vencidas = lista.filter(a => a.status === 'vencido');
+  const proximas = lista.filter(a => a.status === 'critico' || a.status === 'atencao');
+  const sem      = lista.filter(a => a.status === 'sem-registro');
 
   const partes = [];
-  if (vencidos.length) partes.push(`Certificados vencidos: ${vencidos.map(a => a.id).join(', ')}.`);
-  if (proximos.length) partes.push(`${proximos.length} certificado${proximos.length > 1 ? 's vencem' : ' vence'} nos próximos 90 dias: ${proximos.map(a => `${a.id} — ${formatarData(a.validade)}`).join(' · ')}.`);
-  if (sem.length)      partes.push(`${sem.length} de ${lista.length} equipamentos ainda sem número e validade de certificado.`);
-  if (!partes.length)  partes.push('Todos os certificados estão registrados e dentro da validade.');
+  if (vencidas.length) partes.push(`${vencidas.length} vencida${vencidas.length > 1 ? 's' : ''}: ${vencidas.map(a => `${a.id} (${a.endereco})`).join(', ')}.`);
+  if (proximas.length) partes.push(`${proximas.length} vence${proximas.length > 1 ? 'm' : ''} em até 90 dias: ${proximas.map(a => `${a.id} — ${formatarData(a.vencimento)}`).join(' · ')}.`);
+  if (sem.length)      partes.push(`${sem.length} de ${lista.length} sem data de troca registrada.`);
+  if (!partes.length)  partes.push('Todas dentro dos 24 meses.');
 
   return partes.join(' ');
 }
@@ -241,13 +254,13 @@ function renderResumo(lista) {
   const cont = t => lista.filter(a => a.status === t).length;
   const contCert = t => lista.filter(a => a.statusCert === t).length;
   const cartoes = [
-    { rotulo: 'Equipamentos no mapa',   valor: lista.length,             tom: 'neutro'  },
-    { rotulo: 'Baterias vencidas',      valor: cont('vencido'),          tom: 'vencido' },
-    { rotulo: 'Baterias vencem em 30 dias', valor: cont('critico'),      tom: 'critico' },
-    { rotulo: 'Baterias vencem em 90 dias', valor: cont('atencao'),      tom: 'atencao' },
-    { rotulo: 'Baterias sem data',      valor: cont('sem-registro'),     tom: 'neutro'  },
-    { rotulo: 'Certificados vencidos',  valor: contCert('vencido'),      tom: 'vencido' },
-    { rotulo: 'Certificados registrados', valor: lista.length - contCert('sem-registro'), tom: 'ok' }
+    { rotulo: 'Certificados vencidos',        valor: contCert('vencido'),      tom: 'vencido' },
+    { rotulo: 'Certificados vencem em 30 dias', valor: contCert('critico'),    tom: 'critico' },
+    { rotulo: 'Certificados vencem em 90 dias', valor: contCert('atencao'),    tom: 'atencao' },
+    { rotulo: 'Certificados a registrar',     valor: contCert('sem-registro'), tom: 'pendente' },
+    { rotulo: 'Baterias vencidas',            valor: cont('vencido'),          tom: 'secundario' },
+    { rotulo: 'Baterias sem data',            valor: cont('sem-registro'),     tom: 'secundario' },
+    { rotulo: 'Equipamentos no mapa',         valor: lista.length,             tom: 'secundario' }
   ];
 
   el.resumo.innerHTML = cartoes.map(c => `
@@ -281,9 +294,17 @@ function renderRegua(lista) {
     : 'Todos os equipamentos têm data de troca registrada.';
 }
 
+/** Ordem de exibição: o que exige ação no certificado vem primeiro. */
+const PESO_CERT = { 'vencido': 0, 'critico': 1, 'atencao': 2, 'sem-registro': 3, 'ok': 4 };
+
+function ordenar(lista) {
+  return [...lista].sort((a, b) =>
+    (PESO_CERT[a.statusCert] - PESO_CERT[b.statusCert]) || a.id.localeCompare(b.id, 'pt-BR'));
+}
+
 function renderTabela(lista) {
-  el.corpo.innerHTML = lista.map(av => `
-    <tr data-status="${av.status}">
+  el.corpo.innerHTML = ordenar(lista).map(av => `
+    <tr data-status="${av.status}" data-cert="${av.statusCert}">
       <td class="cel-id"    data-rotulo="Datalogger">${av.id}</td>
       <td class="cel-end"   data-rotulo="Endereço">${av.endereco}</td>
       <td class="cel-serie" data-rotulo="Nº de série">${av.serie}</td>
@@ -306,7 +327,7 @@ function renderTabela(lista) {
         ${formatarData(av.vencimento)}
         <span class="restante">${textoRestante(av.diasRestantes, 'registre a troca')}</span>
       </td>
-      <td data-rotulo="Situação">
+      <td data-rotulo="Situação da bateria">
         <span class="selo" data-status="${av.status}">${ROTULO_STATUS[av.status]}</span>
       </td>
       <td>
