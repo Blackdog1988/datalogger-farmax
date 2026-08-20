@@ -44,6 +44,60 @@ const DATALOGGERS = [
   { id: 'DATA 024', endereco: 'R-12-20-N1', serie: 'CM7259100124', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null }
 ];
 
+/* Cópia dos dados originais da planilha, usada ao restaurar. */
+const SEMENTE = DATALOGGERS.map(d => ({ ...d }));
+
+/* ---------- 2.1 Armazenamento no navegador ---------- */
+
+const CHAVE_ARMAZEM = 'codedog.dataloggers.v1';
+let armazemAtivo = true;
+
+/** Aplica um registro salvo sobre o equipamento correspondente. */
+function aplicarRegistro(reg) {
+  const item = DATALOGGERS.find(d => d.id === reg.id);
+  if (!item) return false;
+  item.ultimaTroca  = reg.ultimaTroca  || null;
+  item.certificado  = reg.certificado  || '';
+  item.validadeCert = reg.validadeCert || null;
+  return true;
+}
+
+/** Lê o que foi salvo neste navegador e aplica sobre os dados da planilha. */
+function lerArmazem() {
+  try {
+    const bruto = localStorage.getItem(CHAVE_ARMAZEM);
+    if (!bruto) return;
+    const dados = JSON.parse(bruto);
+    if (Array.isArray(dados)) dados.forEach(aplicarRegistro);
+  } catch (erro) {
+    armazemAtivo = false;
+  }
+}
+
+/** Salva os 24 equipamentos. Chamada a cada edição. */
+function salvarArmazem() {
+  if (!armazemAtivo) return;
+  try {
+    const dados = DATALOGGERS.map(({ id, ultimaTroca, certificado, validadeCert }) =>
+      ({ id, ultimaTroca, certificado, validadeCert }));
+    localStorage.setItem(CHAVE_ARMAZEM, JSON.stringify(dados));
+  } catch (erro) {
+    armazemAtivo = false;
+    avisar('Este navegador bloqueou o salvamento automático. Use "Salvar registro" para guardar um arquivo.');
+  }
+}
+
+/** Descarta o que foi digitado e volta aos dados da planilha. */
+function restaurarPlanilha() {
+  SEMENTE.forEach(sem => {
+    const item = DATALOGGERS.find(d => d.id === sem.id);
+    Object.assign(item, sem);
+  });
+  try { localStorage.removeItem(CHAVE_ARMAZEM); } catch (erro) { /* nada a fazer */ }
+  renderTudo();
+  avisar('Dados voltaram ao conteúdo original da planilha.');
+}
+
 /* ---------- 3. Funções de data ---------- */
 
 const HOJE = zerarHora(new Date());
@@ -160,6 +214,7 @@ const el = {
   corpo:      document.getElementById('corpoTabela'),
   vazio:      document.getElementById('vazio'),
   contagem:   document.getElementById('contagem'),
+  estado:     document.getElementById('estadoArmazem'),
   busca:      document.getElementById('busca'),
   fStatus:    document.getElementById('filtroStatus'),
   fModelo:    document.getElementById('filtroModelo'),
@@ -339,12 +394,20 @@ function renderTabela(lista) {
   el.contagem.textContent = `Exibindo ${lista.length} de ${DATALOGGERS.length} equipamentos.`;
 }
 
+function renderEstadoArmazem() {
+  el.estado.textContent = armazemAtivo
+    ? 'As alterações são salvas automaticamente neste navegador. Para levar os dados a outro computador, use "Salvar registro" e "Carregar registro".'
+    : 'Este navegador não permitiu o salvamento automático (janela anônima ou cookies bloqueados). Use "Salvar registro" antes de fechar a página.';
+  el.estado.classList.toggle('estado-falha', !armazemAtivo);
+}
+
 function renderTudo() {
   const todos = avaliados();
   renderAlerta(todos);
   renderResumo(todos);
   renderRegua(todos);
   renderTabela(filtrados(todos));
+  renderEstadoArmazem();
 }
 
 /* ---------- 7. Ações ---------- */
@@ -360,6 +423,7 @@ function definirTroca(id, valorISO) {
   const item = DATALOGGERS.find(d => d.id === id);
   if (!item) return;
   item.ultimaTroca = valorISO || null;
+  salvarArmazem();
   renderTudo();
   if (valorISO) {
     const venc = somarMeses(paraData(valorISO), VIDA_UTIL_MESES);
@@ -373,6 +437,7 @@ function definirCertificado(id, numero) {
   const item = DATALOGGERS.find(d => d.id === id);
   if (!item) return;
   item.certificado = numero.trim();
+  salvarArmazem();
   renderTudo();
   avisar(item.certificado
     ? `${id}: certificado ${item.certificado} registrado.`
@@ -383,6 +448,7 @@ function definirValidadeCert(id, valorISO) {
   const item = DATALOGGERS.find(d => d.id === id);
   if (!item) return;
   item.validadeCert = valorISO || null;
+  salvarArmazem();
   renderTudo();
   avisar(valorISO
     ? `${id}: certificado válido até ${formatarData(paraData(valorISO))}.`
@@ -461,6 +527,11 @@ document.getElementById('exportarJson').addEventListener('click', () => {
   avisar('Registro salvo. Guarde o arquivo para carregar depois.');
 });
 
+document.getElementById('restaurar').addEventListener('click', () => {
+  const certo = confirm('Isso apaga tudo o que foi digitado nesta página e volta aos dados originais da planilha. Continuar?');
+  if (certo) restaurarPlanilha();
+});
+
 document.getElementById('importarJson').addEventListener('change', e => {
   const arquivo = e.target.files[0];
   if (!arquivo) return;
@@ -472,16 +543,9 @@ document.getElementById('importarJson').addEventListener('change', e => {
       if (!Array.isArray(dados)) throw new Error('formato');
 
       let aplicados = 0;
-      dados.forEach(reg => {
-        const item = DATALOGGERS.find(d => d.id === reg.id);
-        if (item) {
-          item.ultimaTroca  = reg.ultimaTroca  || null;
-          item.certificado  = reg.certificado  || '';
-          item.validadeCert = reg.validadeCert || null;
-          aplicados++;
-        }
-      });
+      dados.forEach(reg => { if (aplicarRegistro(reg)) aplicados++; });
 
+      salvarArmazem();
       renderTudo();
       avisar(`${aplicados} registro(s) carregado(s).`);
     } catch {
@@ -503,4 +567,5 @@ el.dataHoje.textContent = formatarData(HOJE);
   el.fModelo.appendChild(op);
 });
 
+lerArmazem();   // recupera o que foi digitado em visitas anteriores
 renderTudo();
