@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=2">
+<link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
 
@@ -16,8 +16,8 @@
     <p class="eyebrow">Mapeamento térmico &middot; Armazém</p>
     <h1>Mapa de dataloggers</h1>
     <p class="chamada">
-     Os Certificados valem por <strong>12 meses</strong> a partir da data da calibração. Esta página monitora o tempo dos certificados e vida util da 
-      bateria.
+      Cada bateria vale <strong>24 meses</strong> a partir da troca. Esta página conta o tempo por você
+      e avisa quem já passou do prazo.
     </p>
     <p class="hoje">Data de referência: <span id="dataHoje" class="mono"></span></p>
   </div>
@@ -37,27 +37,6 @@
     <div id="resumo" class="resumo"></div>
   </section>
 
-  <!-- Assinatura visual: régua de 24 meses -->
-  <section class="secao" aria-labelledby="tit-regua">
-    <h2 id="tit-regua" class="titulo-secao">Régua de vida útil</h2>
-    <p class="apoio">Posição de cada equipamento dentro dos 24 meses de bateria. Passe o cursor para identificar.</p>
-
-    <div class="regua-caixa">
-      <div class="regua" id="regua" role="img" aria-label="Distribuição dos dataloggers ao longo dos 24 meses de vida útil da bateria">
-        <div class="regua-trilho">
-          <span class="zona zona-ok"></span>
-          <span class="zona zona-atencao"></span>
-          <span class="zona zona-critico"></span>
-        </div>
-        <div class="regua-marcadores" id="reguaMarcadores"></div>
-      </div>
-      <div class="regua-eixo">
-        <span>0</span><span>6</span><span>12</span><span>18</span><span>24 meses</span>
-      </div>
-      <div class="bandeja" id="bandeja"></div>
-    </div>
-  </section>
-
   <!-- Tabela -->
   <section class="secao" aria-labelledby="tit-tabela">
     <div class="cabeca-tabela">
@@ -71,19 +50,19 @@
           <span class="sr-only">Filtrar por situação</span>
           <select id="filtroStatus">
             <option value="todos">Todas as situações</option>
-            <optgroup label="Bateria">
-              <option value="bat:vencido">Bateria vencida</option>
-              <option value="bat:critico">Bateria vence em até 30 dias</option>
-              <option value="bat:atencao">Bateria vence em até 90 dias</option>
-              <option value="bat:ok">Bateria no prazo</option>
-              <option value="bat:sem-registro">Bateria sem data</option>
-            </optgroup>
             <optgroup label="Certificado">
               <option value="cert:vencido">Certificado vencido</option>
               <option value="cert:critico">Certificado vence em até 30 dias</option>
               <option value="cert:atencao">Certificado vence em até 90 dias</option>
-              <option value="cert:ok">Certificado no prazo</option>
               <option value="cert:sem-registro">Certificado sem registro</option>
+              <option value="cert:ok">Certificado no prazo</option>
+            </optgroup>
+            <optgroup label="Bateria">
+              <option value="bat:vencido">Bateria vencida</option>
+              <option value="bat:critico">Bateria vence em até 30 dias</option>
+              <option value="bat:atencao">Bateria vence em até 90 dias</option>
+              <option value="bat:sem-registro">Bateria sem data</option>
+              <option value="bat:ok">Bateria no prazo</option>
             </optgroup>
           </select>
         </label>
@@ -106,7 +85,7 @@
             <th scope="col">Validade do certificado</th>
             <th scope="col">Última troca</th>
             <th scope="col">Vence em</th>
-            <th scope="col">Situação</th>
+            <th scope="col">Situação da bateria</th>
             <th scope="col"><span class="sr-only">Ação</span></th>
           </tr>
         </thead>
@@ -125,7 +104,31 @@
           Carregar registro
           <input type="file" id="importarJson" accept="application/json" hidden>
         </label>
+        <button type="button" class="btn btn-restaurar" id="restaurar">Restaurar planilha</button>
       </div>
+    </div>
+
+    <p class="apoio estado-armazem" id="estadoArmazem"></p>
+  </section>
+
+  <!-- Assinatura visual: régua de 24 meses -->
+  <section class="secao" aria-labelledby="tit-regua">
+    <h2 id="tit-regua" class="titulo-secao">Bateria &middot; régua de vida útil</h2>
+    <p class="apoio">Controle secundário. Posição de cada equipamento dentro dos 24 meses de bateria — passe o cursor para identificar.</p>
+
+    <div class="regua-caixa">
+      <div class="regua" id="regua" role="img" aria-label="Distribuição dos dataloggers ao longo dos 24 meses de vida útil da bateria">
+        <div class="regua-trilho">
+          <span class="zona zona-ok"></span>
+          <span class="zona zona-atencao"></span>
+          <span class="zona zona-critico"></span>
+        </div>
+        <div class="regua-marcadores" id="reguaMarcadores"></div>
+      </div>
+      <div class="regua-eixo">
+        <span>0</span><span>6</span><span>12</span><span>18</span><span>24 meses</span>
+      </div>
+      <div class="bandeja" id="bandeja"></div>
     </div>
   </section>
 
@@ -138,6 +141,6 @@
 
 <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
 
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>
