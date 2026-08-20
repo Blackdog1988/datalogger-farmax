@@ -40,7 +40,7 @@ const DATALOGGERS = [
   { id: 'DATA 020', endereco: 'R20-30-N3',  serie: 'CM723B100002', modelo: 'RC-4HC',     ultimaTroca: null, certificado: '', validadeCert: null },
   { id: 'DATA 021', endereco: 'R26-20-N3',  serie: 'EF7223100247', modelo: 'RC-4HC',     ultimaTroca: '2026-04-17', certificado: '', validadeCert: null },
   { id: 'DATA 022', endereco: 'R6-01-N1',   serie: 'CM7251100009', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null },
-  { id: 'DATA 023', endereco: 'R10-30-N1',  serie: 'EF7225101104', modelo: 'RC-4HC',     ultimaTroca: null, certificado: '', validadeCert: null },
+  { id: 'DATA 023', endereco: 'R10-30-N1',  serie: 'EF7225101104', modelo: 'RC-4HC',     ultimaTroca: '2026-04-19', certificado: '', validadeCert: null },
   { id: 'DATA 024', endereco: 'R-12-20-N1', serie: 'CM7259100124', modelo: 'Tlog B100H', ultimaTroca: null, certificado: '', validadeCert: null }
 ];
 
