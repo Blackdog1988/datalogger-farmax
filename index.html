@@ -71,11 +71,20 @@
           <span class="sr-only">Filtrar por situação</span>
           <select id="filtroStatus">
             <option value="todos">Todas as situações</option>
-            <option value="vencido">Vencidas</option>
-            <option value="critico">Vencem em até 30 dias</option>
-            <option value="atencao">Vencem em até 90 dias</option>
-            <option value="ok">Dentro do prazo</option>
-            <option value="sem-registro">Sem data registrada</option>
+            <optgroup label="Bateria">
+              <option value="bat:vencido">Bateria vencida</option>
+              <option value="bat:critico">Bateria vence em até 30 dias</option>
+              <option value="bat:atencao">Bateria vence em até 90 dias</option>
+              <option value="bat:ok">Bateria no prazo</option>
+              <option value="bat:sem-registro">Bateria sem data</option>
+            </optgroup>
+            <optgroup label="Certificado">
+              <option value="cert:vencido">Certificado vencido</option>
+              <option value="cert:critico">Certificado vence em até 30 dias</option>
+              <option value="cert:atencao">Certificado vence em até 90 dias</option>
+              <option value="cert:ok">Certificado no prazo</option>
+              <option value="cert:sem-registro">Certificado sem registro</option>
+            </optgroup>
           </select>
         </label>
         <label class="campo">
@@ -93,6 +102,8 @@
             <th scope="col">Endereço</th>
             <th scope="col">Nº de série</th>
             <th scope="col">Modelo</th>
+            <th scope="col">Nº do certificado</th>
+            <th scope="col">Validade do certificado</th>
             <th scope="col">Última troca</th>
             <th scope="col">Vence em</th>
             <th scope="col">Situação</th>
